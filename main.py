@@ -36,7 +36,7 @@ from pypdf import PdfReader
 load_dotenv()
 
 # Configuration
-SEARCH_TERMS = ["Data Analyst", "Data Scientist"]
+SEARCH_TERMS = ["Data Analyst", "Data Scientist","Health", "Healthcare", "Analyst"]
 # SEARCH_TERM = "Software Engineer (Python, Java)"
 LOCATIONS = ["London","United Kingdom"]
 RESULT_LIMIT = 20
@@ -377,9 +377,9 @@ def main():
     
     # 3. Sorting & Sending
     scored_jobs.sort(key=lambda x: x['score'], reverse=True)
-    top_20 = scored_jobs[:20]
+    top_30 = scored_jobs[:30]
 
-    send_email(top_20)
+    send_email(top_30)
 
 if __name__ == "__main__":
     main()
