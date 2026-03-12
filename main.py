@@ -36,10 +36,10 @@ from pypdf import PdfReader
 load_dotenv()
 
 # Configuration
-SEARCH_TERMS = ["Data Analyst", "Data Scientist","Health", "Healthcare", "Analyst"]
+SEARCH_TERMS = ["Data Analyst", "Data Scientist","Health Data Analyst", "Informatics Analyst", "Analyst"]
 # SEARCH_TERM = "Software Engineer (Python, Java)"
-LOCATIONS = ["London","United Kingdom"]
-RESULT_LIMIT = 20
+LOCATIONS = ["United Kingdom"]
+RESULT_LIMIT = 15
 HOURS_OLD = 24
 PROXY_URL = os.getenv("PROXY_URL", None)
 RESUME = os.getenv("RESUME_TEXT", None)
@@ -213,7 +213,7 @@ def get_jobs_data(location: str, search_term: str) -> pd.DataFrame:
         try:
             print(f"   🔄 Attempt {attempt} of {MAX_RETRIES}...")
             jobs = scrape_jobs(
-                site_name=["linkedin"],
+                site_name=["linkedin","Indeed"],
                 search_term=search_term,
                 location=location,
                 result_wanted=RESULT_LIMIT,
@@ -379,7 +379,7 @@ def main():
     scored_jobs.sort(key=lambda x: x['score'], reverse=True)
     top_30 = scored_jobs[:30]
 
-    send_email(top_30)
+    send_email(top_50)
 
 if __name__ == "__main__":
     main()
