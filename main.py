@@ -36,10 +36,10 @@ from pypdf import PdfReader
 load_dotenv()
 
 # Configuration
-SEARCH_TERMS = ["Data Analyst", "Data Scientist", "Analyst"]
+SEARCH_TERMS = ["Data Analyst", "Data Scientist"]
 # SEARCH_TERM = "Software Engineer (Python, Java)"
-LOCATIONS = ["UK", "London","United Kingdom", "Birmingham", "Nottingham", "Glasgow", "Liverpool", "Manchester"]
-RESULT_LIMIT = 30
+LOCATIONS = ["London","United Kingdom"]
+RESULT_LIMIT = 20
 HOURS_OLD = 24
 PROXY_URL = os.getenv("PROXY_URL", None)
 RESUME = os.getenv("RESUME_TEXT", None)
@@ -83,6 +83,7 @@ The years of experience should be extracted from the job description. If not men
 
 [Criteria]
 1. Skill Match (50%): How well do the required skills and technologies in the job description align with those listed on the resume? (Programming Languages, Frameworks, Tools, etc,)
+2. Candidate has 1 year of experience. If the job requires more than 3 years (which is 1+2 gap), score must be below 60
 """
 
 system_template += CRITERIA
@@ -226,7 +227,7 @@ def get_jobs_data(location: str, search_term: str) -> pd.DataFrame:
             print(f"     ❌  Error on attempt {attempt}: {str(e)}")
             print(f"❌  Error during job scraping: {str(e)}")
 
-            if attempt > MAX_RETRIES:
+            if attempt < MAX_RETRIES:
                 wait_time = random.uniform(3, 6)
                 print(f"   ⏳ Waiting for {wait_time:.2f} seconds before retrying...")
                 time.sleep(wait_time)
@@ -333,8 +334,11 @@ def main():
     if df.empty:
         return
 
+    #去重
+    df = df.drop_duplicates(subset=["title", "company", "job_url"], keep="first")
+    
     # # leave 3 jobs for testing
-    # df = df.head(3)
+    # df = df.head(3)/
 
     scored_jobs = []
 
@@ -370,11 +374,12 @@ def main():
                 "reason": evaluation['reason'],
                 "yoe": evaluation['yoe']
             })
-        # 3. Sorting & Sending
-        scored_jobs.sort(key=lambda x: x['score'], reverse=True)
-        top_15 = scored_jobs[:15]
+    
+    # 3. Sorting & Sending
+    scored_jobs.sort(key=lambda x: x['score'], reverse=True)
+    top_20 = scored_jobs[:20]
 
-    send_email(top_15)
+    send_email(top_20)
 
 if __name__ == "__main__":
     main()
