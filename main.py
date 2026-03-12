@@ -38,8 +38,8 @@ load_dotenv()
 # Configuration
 SEARCH_TERMS = ["Data Analyst", "Data Scientist","Health Data Analyst", "Informatics Analyst", "Analyst"]
 # SEARCH_TERM = "Software Engineer (Python, Java)"
-LOCATIONS = ["United Kingdom"]
-RESULT_LIMIT = 15
+LOCATIONS = ["London", "United Kingdom"]
+RESULT_LIMIT = 20
 HOURS_OLD = 24
 PROXY_URL = os.getenv("PROXY_URL", None)
 RESUME = os.getenv("RESUME_TEXT", None)
@@ -379,7 +379,7 @@ def main():
     scored_jobs.sort(key=lambda x: x['score'], reverse=True)
     top_30 = scored_jobs[:30]
 
-    send_email(top_50)
+    send_email(top_30)
 
 if __name__ == "__main__":
     main()
